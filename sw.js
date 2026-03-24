@@ -1,5 +1,5 @@
 // скрипт service worker
-const CACHE_NAME = 'notes-cache-v3';
+const CACHE_NAME = 'notes-cache-v13';
 const ASSETS = [
   '/',
   '/index.html',
@@ -12,7 +12,9 @@ const ASSETS = [
   '/icons/favicon-256x256.png',
   '/icons/android-chrome-512x512.png',
   '/icons/apple-touch-icon.png',
-  '/icons/favicon.ico'
+  '/icons/favicon.ico',
+  '/styles/styles.css',
+  '/styles/styles.scss'
 ];
 
 self.addEventListener('install', event => {

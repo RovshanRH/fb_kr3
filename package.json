@@ -7,6 +7,10 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "concurrently \"npm run server\" \"npm run sass\"",
+    "server": "live-server",
+    "sass": "sass --watch styles/styles.scss:styles/styles.css",
+    "certificate": "mkcert -install && mkcert localhost 127.0.0.1 ::1",
+    "https": "http-server --ssl --cert localhost+2.pem --key localhost+2-key.pem -p 3000"
   }
 }

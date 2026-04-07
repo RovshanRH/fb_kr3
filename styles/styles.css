@@ -131,6 +131,60 @@ li {
   animation: noteIn 260ms ease both;
 }
 
+.browser-notify-container {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 1200;
+  display: grid;
+  gap: 10px;
+  width: min(320px, calc(100vw - 28px));
+}
+
+.browser-notify {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #241c3a;
+  color: var(--text);
+  padding: 10px 12px;
+  box-shadow: 0 10px 22px rgba(7, 4, 16, 0.45);
+  animation: notifyIn 180ms ease-out both;
+}
+
+.browser-notify-success {
+  border-color: rgba(120, 228, 173, 0.45);
+}
+
+.browser-notify-warning {
+  border-color: rgba(255, 183, 94, 0.55);
+}
+
+.browser-notify-info {
+  border-color: rgba(140, 185, 255, 0.5);
+}
+
+.browser-notify-close {
+  height: 28px;
+  width: 28px;
+  min-width: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.browser-notify.is-hiding {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
 @keyframes liftIn {
   from {
     opacity: 0;
@@ -149,6 +203,16 @@ li {
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+@keyframes notifyIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 @media (max-width: 640px) {

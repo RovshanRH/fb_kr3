@@ -1,17 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obsidium - Главная</title>
-</head>
-<body>
-    <form id="note-form" autocomplete="off">
-        <label for="note-input">Новая заметка</label>
-        <input id="note-input" name="note" type="text" placeholder="Введите текст" required>
-        <button type="submit">Добавить</button>
-    </form>
-    <ul id="notes-list"></ul>
-    <script src="./scripts/home.js" defer></script>
-</body>
-</html>
+<div class="home-content">
+  <h2>Добавить заметку</h2>
+  <form id="note-form" autocomplete="off">
+    <label for="note-input">Новая заметка</label>
+    <input
+      id="note-input"
+      name="note"
+      type="text"
+      placeholder="Введите текст заметки"
+      required
+    />
+    <button type="submit">Добавить</button>
+  </form>
+
+  <h2>Список заметок</h2>
+  <ul id="notes-list"></ul>
+
+  <footer>
+    <button id="enable-push-btn" type="button">Включить уведомления</button>
+    <button id="disable-push-btn" type="button">Отключить уведомления</button>
+  </footer>
+</div>

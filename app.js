@@ -1,3 +1,7 @@
+const tabs = document.querySelectorAll(".tabs");
+const homeBtn = document.querySelector("#homeBtn");
+const aboutBtn = document.querySelector("#aboutBtn");
+
 
 
 if ('serviceWorker' in navigator) {

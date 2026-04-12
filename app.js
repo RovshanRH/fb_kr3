@@ -76,10 +76,11 @@ function renderNotes(list) {
         .map(
             (note) => `
 				<li class="note" data-id="${note.id}">
+                    <div class="muted">ID:${note.id}</div>
 					<span>${note.text}</span>
                     <div>
                     Дата напоминания:
-                    <span class="timestamp">${note.timestamp || "нет"}</span>
+                    <span class="muted">${note.timestamp || "нет"}</span>
                     </div>
 					<div class="note-actions">
 						<button type="button" class="edit-note-btn">Изменить</button>

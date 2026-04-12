@@ -42,6 +42,7 @@ self.addEventListener('notificationclick', (event) => {
   const notification = event.notification;
   const action = event.action;
   if (action === 'snooze') {
+    console.log("Snooze clicked");
     // Получаем id напоминания из данных уведомления
     const reminderId = notification.data.reminderId;
     // Отправляем запрос на сервер для откладывания
@@ -50,6 +51,8 @@ self.addEventListener('notificationclick', (event) => {
         .then(() => notification.close())
         .catch(err => console.error('Snooze failed:', err))
     );
+    console.log("Snooze called for reminder:", reminderId);
+
   } else {
     // При клике на само уведомление просто закрываем его
     notification.close();

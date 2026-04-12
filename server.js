@@ -144,7 +144,8 @@ io.on('connection', (socket) => {
             subscriptions.forEach(sub => {
                 webpush.sendNotification(sub, payload).catch(err => console.error('Ошибка уведа:', err));
             });
-            reminders.delete(id);
+            // reminders.delete(id);
+            // return null;
         }, delay);
         reminders.set(id, { timeoutId, text, timestamp })
     })
@@ -180,7 +181,7 @@ app.post('/unsubscribe', (req, res) => {
 });
 
 app.post('/snooze', (req, res) => {
-    const reminderId = parseInt(req.query.reminderId, 10);
+    const reminderId = parseInt(req.query.reminderId, 10) || parseInt(req.body.reminderId, 10);
     if (!reminderId || !reminders.has(reminderId)) {
         return res.status(404).json({ error: 'Reminder not found' });
     }
@@ -199,7 +200,7 @@ app.post('/snooze', (req, res) => {
             webpush.sendNotification(sub, payload).catch(err =>
                 console.error('Push error:', err));
         });
-        reminders.delete(reminderId);
+        // reminders.delete(reminderId);
     }, newDelay);
     // Обновляем хранилище
     reminders.set(reminderId, {

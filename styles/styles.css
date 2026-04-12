@@ -192,7 +192,7 @@ input[type="datetime-local"] {
   transition: opacity 180ms ease, transform 180ms ease;
 }
 
-.timestamp {
+.muted {
   color: var(--muted);
 }
 

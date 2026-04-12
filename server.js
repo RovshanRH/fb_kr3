@@ -12,6 +12,8 @@ const app = express();
 let server;
 let protocol = 'http';
 
+const reminders = new Map();
+
 function getCertPair() {
     const pairs = [
         ['localhost+2.pem', 'localhost+2-key.pem'],
@@ -53,7 +55,7 @@ const io = socketIo(server, {
 
 const VAPID_PUBLIC_KEY = 'BHxnqUVIW8YoTnQByv1d3IDN4DY3QxRjWAoMGvi7PAGKy9fREhKhnFPB2LQyZw7Jws0daGotxkEnKWtUxo-aUls';
 const VAPID_PRIVATE_KEY = 'r6pudygCmFZ-wzBJK_44m1p1GypaJsapa1XTkfP3fXU';
-const VAPID_CONTACT = process.env.VAPID_CONTACT || 'mailto:example@example.com';
+const VAPID_CONTACT = 'mailto:rovshanbro@gmail.com';
 
 webpush.setVapidDetails(VAPID_CONTACT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 
@@ -121,6 +123,32 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('Client disconnected:', socket.id);
     });
+
+    socket.on('newReminder', (reminder) => {
+        const { id, text, timestamp } = reminder;
+        const delay = timestamp - Date.now();
+        console.log(delay);
+        if (delay <= 0) return;
+
+        const existingReminder = reminders.get(id);
+        if (existingReminder?.timeoutId) {
+            clearTimeout(existingReminder.timeoutId);
+        }
+
+        const timeoutId = setTimeout(() => {
+            const payload = JSON.stringify({
+                title: "Напоминалка",
+                body: text,
+                reminderId: id
+            });
+            subscriptions.forEach(sub => {
+                webpush.sendNotification(sub, payload).catch(err => console.error('Ошибка уведа:', err));
+            });
+            reminders.delete(id);
+        }, delay);
+        reminders.set(id, { timeoutId, text, timestamp })
+    })
+
 });
 
 app.get('/vapid-public-key', (req, res) => {
@@ -150,6 +178,38 @@ app.post('/unsubscribe', (req, res) => {
     subscriptions = subscriptions.filter((sub) => sub.endpoint !== endpoint);
     res.status(200).json({ message: 'Subscription removed' });
 });
+
+app.post('/snooze', (req, res) => {
+    const reminderId = parseInt(req.query.reminderId, 10);
+    if (!reminderId || !reminders.has(reminderId)) {
+        return res.status(404).json({ error: 'Reminder not found' });
+    }
+    const reminder = reminders.get(reminderId);
+    // Отменяем предыдущий таймер
+    clearTimeout(reminder.timeoutId);
+    // Устанавливаем новый через 5 минут (300 000 мс)
+    const newDelay = 5 * 60 * 1000;
+    const newTimeoutId = setTimeout(() => {
+        const payload = JSON.stringify({
+            title: 'Напоминание отложено',
+            body: reminder.text,
+            reminderId: reminderId
+        });
+        subscriptions.forEach(sub => {
+            webpush.sendNotification(sub, payload).catch(err =>
+                console.error('Push error:', err));
+        });
+        reminders.delete(reminderId);
+    }, newDelay);
+    // Обновляем хранилище
+    reminders.set(reminderId, {
+        timeoutId: newTimeoutId,
+        text: reminder.text,
+        timestamp: Date.now() + newDelay
+    });
+    res.status(200).json({ message: 'Reminder snoozed for 5 minutes' });
+});
+
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {

@@ -79,7 +79,7 @@ function renderNotes(list) {
 					<span>${note.text}</span>
                     <div>
                     Дата напоминания:
-                    <span class="timestamp">${note.timestamp || "нет напоминания"}</span>
+                    <span class="timestamp">${note.timestamp || "нет"}</span>
                     </div>
 					<div class="note-actions">
 						<button type="button" class="edit-note-btn">Изменить</button>
@@ -105,8 +105,15 @@ function addNote(text, timestamp) {
     socket.emit('newTask', {
         id: newNote.id,
         text: newNote.text,
-        timestamp: timestamp
+        // timestamp: timestamp.getTime()
     });
+    if (timestamp) {
+        socket.emit('newReminder', {
+            id: newNote.id,
+            text: newNote.text,
+            timestamp: new Date(timestamp).getTime()
+        })
+    }
 }
 
 function updateNote(noteId, text) {
@@ -250,7 +257,7 @@ function initPushControls() {
         enableBtn.style.display = 'inline-block';
         disableBtn.style.display = 'none';
     });
-    
+
     enableBtn.addEventListener('click', async () => {
         try {
             const isBackendReady = await checkBackendReady();
@@ -301,7 +308,7 @@ function initNotes() {
     const timeInput = document.getElementById('datetime-input');
     const list = document.getElementById('notes-list');
     const defaultButton = document.getElementById('without-timestamp')
-    
+
 
     if (!form || !input || !list) {
         return;

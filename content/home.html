@@ -9,8 +9,12 @@
       placeholder="Введите текст заметки"
       required
     />
-    <button type="submit">Добавить</button>
+    <input type="datetime-local" id="datetime-input" name="datetime" >
+    <div>
+    <button type="submit" id="without-timestamp">Добавить</button>
+  </div>
   </form>
+  
 
   <h2>Список заметок</h2>
   <ul id="notes-list"></ul>

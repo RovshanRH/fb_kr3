@@ -130,6 +130,13 @@ li {
   line-height: 1.4;
   animation: noteIn 260ms ease both;
 }
+input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+.note {
+  margin-bottom: 15px;
+}
 
 .browser-notify-container {
   position: fixed;
@@ -183,6 +190,10 @@ li {
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.timestamp {
+  color: var(--muted);
 }
 
 @keyframes liftIn {

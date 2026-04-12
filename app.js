@@ -68,7 +68,7 @@ function renderNotes(list) {
     const notes = getNotes();
 
     if (!notes.length) {
-        list.innerHTML = '<li>Список заметок пуст.</li>';
+        list.innerHTML = '<li style="margin-bottom: 15px;">Список заметок пуст.</li>';
         return;
     }
 
@@ -77,6 +77,10 @@ function renderNotes(list) {
             (note) => `
 				<li class="note" data-id="${note.id}">
 					<span>${note.text}</span>
+                    <div>
+                    Дата напоминания:
+                    <span class="timestamp">${note.timestamp || "нет напоминания"}</span>
+                    </div>
 					<div class="note-actions">
 						<button type="button" class="edit-note-btn">Изменить</button>
 						<button type="button" class="delete-note-btn">Удалить</button>
@@ -87,11 +91,12 @@ function renderNotes(list) {
         .join('');
 }
 
-function addNote(text) {
+function addNote(text, timestamp) {
     const notes = getNotes();
     const newNote = {
         id: Date.now(),
-        text
+        text,
+        timestamp: timestamp
     };
 
     notes.push(newNote);
@@ -100,7 +105,7 @@ function addNote(text) {
     socket.emit('newTask', {
         id: newNote.id,
         text: newNote.text,
-        timestamp: Date.now()
+        timestamp: timestamp
     });
 }
 
@@ -245,7 +250,7 @@ function initPushControls() {
         enableBtn.style.display = 'inline-block';
         disableBtn.style.display = 'none';
     });
-
+    
     enableBtn.addEventListener('click', async () => {
         try {
             const isBackendReady = await checkBackendReady();
@@ -293,7 +298,10 @@ function initPushControls() {
 function initNotes() {
     const form = document.getElementById('note-form');
     const input = document.getElementById('note-input');
+    const timeInput = document.getElementById('datetime-input');
     const list = document.getElementById('notes-list');
+    const defaultButton = document.getElementById('without-timestamp')
+    
 
     if (!form || !input || !list) {
         return;
@@ -305,12 +313,13 @@ function initNotes() {
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         const text = input.value.trim();
+        const timestamp = timeInput.value.trim();
 
         if (!text) {
             return;
         }
 
-        addNote(text);
+        addNote(text, timestamp);
         input.value = '';
         renderNotes(list);
     });
